@@ -1,14 +1,23 @@
 <?php
-header('Content-Type: application/json');
+// ========== 0. 解决跨域问题（最关键的一步） ==========
+header("Access-Control-Allow-Origin: *"); // 允许所有来源访问
+header("Access-Control-Allow-Methods: GET, POST, DELETE, OPTIONS"); // 允许的请求方法
+header("Access-Control-Allow-Headers: Content-Type, Authorization"); // 允许的请求头
+header('Content-Type: application/json; charset=utf-8'); // 返回 JSON 格式
 
-// ========== 1. 数据库连接（简化版，兼容所有 PHP 版本） ==========
+// 处理 OPTIONS 预检请求（浏览器跨域时会自动发这个，直接返回200即可）
+if ($_SERVER['REQUEST_METHOD'] == 'OPTIONS') {
+    http_response_code(200);
+    exit;
+}
+
+// ========== 1. 数据库连接 ==========
 $host = 'localhost';
 $dbname = 'test_db';
 $username = 'phpuser';
 $password = 'slytheiro';
 
 try {
-    // 去掉不兼容的 SSL 参数
     $pdo = new PDO("mysql:host=$host;dbname=$dbname;charset=utf8", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch (PDOException $e) {
@@ -44,8 +53,10 @@ function getList($pdo) {
 
 // ========== 5. 添加用户 ==========
 function addUser($pdo) {
-    $name = $_POST['name'] ?? '';
-    $salary = intval($_POST['salary'] ?? 0);
+    // 兼容 Vue 发送 JSON 数据的情况
+    $input = json_decode(file_get_contents('php://input'), true);
+    $name = $input['name'] ?? $_POST['name'] ?? '';
+    $salary = intval($input['salary'] ?? $_POST['salary'] ?? 0);
 
     if (empty($name) || $salary <= 0) {
         echo json_encode(['error' => '姓名和薪水不能为空']);

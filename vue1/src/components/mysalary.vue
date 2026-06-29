@@ -2,7 +2,7 @@
 <dIV class="user">
   姓名：<input v-model="msc" @input="sava"/> {{msc}}<br />
   薪水：<input v-model.number="re" placeholder="输入薪水" @input="sava"/>{{re}}<br />
-  <button class="width" @click="add">提交</button>
+  <button class="width" v-on:click="add">提交</button>
   <button  @user="CheageUser">个人信息页</button>
   <hr />
   <div class="userInfo" >
@@ -30,22 +30,8 @@
 //     }
 //   }
 // }
-import {ref,onMounted} from 'vue'
-const msc = ref(localStorage.getItem('msc')||'')
-const re =ref(Number(localStorage.getItem('re'))||0) 
-const age=ref(Number(localStorage.getItem('age'))||0) 
-
-const sava=()=>{localStorage.setItem('msc',msc.value)
-  localStorage.setItem('re',String(re.value))
-  localStorage.setItem("age",String(age))
- 
-}
-
-const add =()=>{
-  console.log('点击前：',re.value)
-  re.value += 1000
-  console.log('点击后',re.value)
-      sava()}
+import Mysalary from '@/components/MySalary'
+let {userName,salary,adSalary}=Mysalary() 
       
 
 </script>
