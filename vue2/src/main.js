@@ -8,7 +8,7 @@ import NewPages from "@/pages/NewPages.vue"
 import AboutPage from "@/pages/AboutPage.vue"
 
 //路由规则
-const router=[
+const routes=[
   {path:"/home", component:HomePages},
   {path:"/about", component:AboutPage},
   {path:"/news", component:NewPages},
@@ -19,8 +19,10 @@ const router =createRouter({
   history:createWebHashHistory(),//路由工作模式
   routes
 })
-
+import { createPinia } from 'pinia'
+const pinia=createPinia()
 //加载路由
-const app=createApp(app)
+const app=createApp(App)
+app.use(pinia)
 app.use(router)
 app.mount('#app')
